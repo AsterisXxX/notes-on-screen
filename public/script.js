@@ -30,9 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSubmit = document.getElementById("btnSubmit");
   const inputUsername = document.getElementById("inputUsername");
 
-  const btnFullscreen = document.getElementById("btnFullscreen");
-  const fullscreenIcon = document.getElementById("fullscreenIcon");
-
   const eraserSizeInput = document.getElementById("eraserSize");
   const eraserSizeVal = document.getElementById("eraserSizeVal");
 
@@ -71,41 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("resize", resizeCanvas);
 
-  // Fullscreen Handler
-  btnFullscreen.addEventListener("click", () => {
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      const docElm = document.documentElement;
-      if (docElm.requestFullscreen) docElm.requestFullscreen();
-      else if (docElm.webkitRequestFullscreen) docElm.webkitRequestFullscreen();
-    } else {
-      if (document.exitFullscreen) document.exitFullscreen();
-      else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-    }
-  });
-
-  // Listener untuk tombol Enter di Keyboard
+  // Close Keyboard saat tekan Enter di iPad
   inputUsername.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Mencegah submit form bawaan/reload
-      inputUsername.blur(); // Melepas fokus -> Menutup virtual keyboard di iPad
+      e.preventDefault();
+      inputUsername.blur();
     }
   });
-
-  function updateFullscreenIcon() {
-    const isFullscreen =
-      document.fullscreenElement || document.webkitFullscreenElement;
-    if (isFullscreen) {
-      fullscreenIcon.classList.remove("bi-fullscreen");
-      fullscreenIcon.classList.add("bi-fullscreen-exit");
-    } else {
-      fullscreenIcon.classList.remove("bi-fullscreen-exit");
-      fullscreenIcon.classList.add("bi-fullscreen");
-    }
-    setTimeout(resizeCanvas, 100);
-  }
-
-  document.addEventListener("fullscreenchange", updateFullscreenIcon);
-  document.addEventListener("webkitfullscreenchange", updateFullscreenIcon);
 
   // Drawing Logic
   function saveState() {
@@ -331,11 +300,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Submit Handler dengan Validasi Nama
+  // Submit Handler
   btnSubmit.addEventListener("click", async () => {
     const username = inputUsername.value.trim();
 
-    // 1. Validasi Tidak Boleh Kosong
     if (!username) {
       Swal.fire({
         icon: "warning",
@@ -347,7 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 2. Validasi Maksimal 10 Karakter
     if (username.length > 10) {
       Swal.fire({
         icon: "error",
