@@ -76,6 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  inputUsername.addEventListener("input", (e) => {
+    // Regex [^a-zA-Z0-9] artinya: cari semua karakter selain huruf dan angka
+    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "");
+  });
+
   // Drawing Logic
   function saveState() {
     if (undoStack.length >= MAX_HISTORY) undoStack.shift();
@@ -304,6 +309,7 @@ document.addEventListener("DOMContentLoaded", () => {
   btnSubmit.addEventListener("click", async () => {
     const username = inputUsername.value.trim();
 
+    // 1. Validasi Tidak Boleh Kosong
     if (!username) {
       Swal.fire({
         icon: "warning",
@@ -315,11 +321,25 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // 2. Validasi Maksimal 10 Karakter
     if (username.length > 10) {
       Swal.fire({
         icon: "error",
         title: "Nama Terlalu Panjang!",
         text: "Nama pembuat maksimal terdiri dari 10 karakter.",
+        confirmButtonColor: "#212529",
+      });
+      inputUsername.focus();
+      return;
+    }
+
+    // 3. Validasi Hanya Alfanumerik (A-Z, a-z, 0-9)
+    const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+    if (!alphanumericRegex.test(username)) {
+      Swal.fire({
+        icon: "error",
+        title: "Karakter Tidak Valid!",
+        text: "Nama hanya boleh berisi huruf dan angka (tanpa spasi atau simbol).",
         confirmButtonColor: "#212529",
       });
       inputUsername.focus();
